@@ -1,0 +1,71 @@
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Navbar brand/logo, etc. -->
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'movies:allmoviescat' %}">Home</a>
+                </li>
+
+                <!-- Dropdown for categories -->
+                <li class="nav-item dropdown {% if 'movies' in request.path %} active {% endif %}">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        MOVIES
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <!-- Add movie button (visible to authenticated users) -->
+                        {% if user.is_authenticated %}
+                            <li><a class="dropdown-item" href="{% url 'movies:add_movie' %}">Add Movie</a></li>
+                            {% if user.is_superuser or perms.movies.add_category %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'movies:add_category' %}">Add Category</a></li>
+                            {% endif %}
+                        {% endif %}
+                        <!-- List of categories -->
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'movies:allmoviescat' %}">ALL MOVIES</a></li>
+                        {% for cat in links %}
+                            {% if cat %}
+                                <li><a class="dropdown-item" href="{% url 'movies:allmoviescat' c_id=cat.id %}">{{ cat.name }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
+
+                <!-- Admin Panel link (visible to superusers and staff) -->
+                {% if user.is_authenticated and user.is_superuser or user.is_staff %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:index' %}">Admin Panel</a>
+                    </li>
+                {% endif %}
+
+                <!-- User credentials dropdown -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">User credentials</a>
+                    <div class="dropdown-menu bg-light m-0">
+                        {% if user.is_authenticated %}
+                            <a href="#" class="dropdown-item">Hello {{ user.first_name }}</a>
+                            <a href="{% url 'movies:profile' %}" class="dropdown-item">Profile</a>
+                            <a href="{% url 'movies:logout' %}" class="dropdown-item">Logout</a>
+                        {% else %}
+                            <a href="{% url 'movies:register' %}" class="dropdown-item">Register</a>
+                            <a href="{% url 'movies:login' %}" class="dropdown-item">Login</a>
+                        {% endif %}
+                    </div>
+                </li>
+            </ul>
+            <!-- Search form -->
+            <form class="d-flex" action="{% url 'search:searchresult' %}" method="get">
+                {% csrf_token %}
+                <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit"><i class="fa-solid fa-magnifying-glass"></i><!--search--></button>
+            </form>
+        </div>
+    </div>
+</nav>

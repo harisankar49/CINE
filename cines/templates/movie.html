@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block metadescription %}
+  {{ movie.description|truncatewords:155 }}
+{% endblock %}
+
+{% block title %}
+  {% if movie.category %}
+    {{ movie.name }} - Baely Stores
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="row" style="margin-top: 20px;">
+    <div class="mx_auto">
+      <p><a href="{% url 'movies:allmoviescat' %}">Home</a> | <a href="{% url 'movies:allmoviescat' c_id=movie.category.id %}">{{ movie.category }}</a> | {{ movie.name }}</p>
+    </div>
+  </div>
+  <div class="container" style="margin-top: 20px;">
+    <div class="row">
+      <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
+        <div style="min-width:18rem;">
+          <img src="{{ movie.image.url }}" alt="{{ movie.name }}">
+          <p><a href="{{ movie.trailer_link }}" target="_blank"><b><h5>WATCH TRAILER</h5></b></a></p>
+        </div>
+      </div>
+      <div class="col-12 col-sm-12 col-lg-6">
+        <div>
+          <h1 style="font-size: 24px; font-weight: bold;">{{ movie.name }}</h1>
+          <p>Actors:{{ movie.actors }}</p>
+          <p style="font-size: 20px; font-weight: bold; margin-top: 20px;">More details</p>
+          <p style="font-size: 16px; text-align: justify;">{{ movie.description }}</p>
+          {% if user.is_authenticated %}
+            {% if user.is_superuser or user == movie.added_by %}
+              <a href="{% url 'movies:edit_movie' id=movie.id %}" class="btn btn-primary">Edit</a>
+              <a href="{% url 'movies:delete_movie' id=movie.id %}" class="btn btn-danger">Delete</a>
+            {% endif %}
+            <form id="review-form" method="post" action="{% url 'movies:add_review' c_id=movie.category.id p_id=movie.id %}">
+              {% csrf_token %}
+              <label for="rating">Rating:</label>
+              <select name="rating" id="rating">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select><br>
+              <label for="comment">Comment:</label><br>
+              <textarea name="comment" id="comment" rows="4" cols="50"></textarea><br>
+              <button type="submit">Submit Review</button>
+            </form>
+          {% else %}
+            <p>Please log in to add a review.</p>
+          {% endif %}
+        </div>
+        <div>
+          <h2>Comments and Ratings</h2>
+          <ul>
+            {% for review in movie.review_set.all %}
+              <li>{{ review.user.first_name }}: {{ review.comment }} - Rating: {{ review.rating }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

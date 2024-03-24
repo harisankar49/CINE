@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block metadescription %}
+    Welcome to The Baely, Experience shopping like a Breeze.....
+{% endblock %}
+
+{% block title %}
+    Search
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <form action="{% url 'search:searchresult' %}" method="GET" class="form-inline mt-4">
+                <div class="form-group mr-2">
+                    <input type="text" name="q" placeholder="Search..." class="form-control" value="{{ query }}">
+                </div>
+                <div class="form-group mr-2">
+                    <select name="category" class="form-control">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <p class="text-center my_search_text">You have searched for: <b>"{{ query }}"</b></p>
+            {% if movies %}
+                {% if movies.0.category %}
+                    <p class="text-center">The movies belong to category: <b>{{ movies.0.category.name }}</b></p>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        {% for product in movies %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-3">
+            <div class="card text-center">
+                <a href="{{ product.get_url }}"><img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}"></a>
+                <div class="card-body">
+                    <h4 class="card-title">{{ product.name }}</h4>
+                    <h5>Released on {{ product.release_date }}</h5>
+                    <h5>Actors: {{ product.actors }}</h5>
+                    {% if product.category %}
+                        <p>Category: {{ product.category.name }}</p>
+                    {% endif %}
+                    <p>{{ product.description }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-md-12">
+            <p class="text-center my_search_text">No results found.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background-image: url('{% static "img/your-background-image.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        margin: 0; /* Reset default body margin */
+        padding: 0; /* Reset default body padding */
+        font-family: Arial, sans-serif; /* Add a default font */
+        color: #fff; /* Set text color to white */
+    }
+
+    .profile-container {
+        width: 300px;
+        margin: 100px auto;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.7); /* Add a semi-transparent black background */
+        border-radius: 10px;
+        text-align: left; /* Align text to the left */
+    }
+
+    .profile-container p {
+        margin-bottom: 10px;
+    }
+
+    .profile-container a {
+        color: #fff; /* Set link color to white */
+        text-decoration: none; /* Remove underline from links */
+    }
+
+    .profile-container a:hover {
+        text-decoration: underline; /* Add underline on hover */
+    }
+</style>
+
+<div class="profile-container">
+    {% if user.is_authenticated %}
+    <p>Username: {{ user.username }}</p>
+    <p>First Name: {{ user.first_name }}</p>
+    <p>Last Name: {{ user.last_name }}</p>
+    <p>Email Address: {{ user.email }}</p>
+    <a href="{% url 'movies:edit_profile' %}">Edit Profile</a>
+    {% else %}
+    <p>Please <a href="{% url 'movies:login' %}">log in</a> to view your profile.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block metadescription %}
+    {% if category %}
+        {{ category.description|truncatewords:155 }}
+    {% else %}
+        Welcome to The Cine, Experience the theatre in home.....
+    {% endif %}
+{% endblock %}
+
+{% block title %}
+    {% if category %}
+        {{ category.title }} - THE CINE
+    {% else %}
+        THE CINE PALACE.....
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if category %}
+        <div>
+            <div class="row my_row_class">
+                <div class="mx_auto">
+                    <h2 style="font-family: Arial, sans-serif; color: black; text-align: left;">
+                        <a href="{% url 'movies:allmoviescat' c_id=category.id %}" style="text-decoration: none; color: black;">
+                            <b>WELCOME TO THE MAJESTIC COLLECTIONS OF BLOCKBUSTERS</b>
+                        </a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="mx_auto">
+            {% if category.image %}
+                <img class="my_image" src="{{ category.image.url }}" alt="{{ category.name }}" height="350px" width="1900px" >
+            {% else %}
+                <p>No image available for {{ category.name }}</p>
+            {% endif %}
+        </div>
+        <br>
+        <div>
+            <h1 class="text-center my_title">{{ category.name }}</h1>
+            <p class="text-justify">{{ category.description }}</p>
+        </div>
+    {% else %}
+        <div>
+            <img class="my_image my_image_padding" src="{% static 'img/cine.png' %}" class="fluid" alt="Our products" height="350px" width="1900px">
+        </div>
+        <br>
+        <div>
+            <h1 class="text-center my_title">OUR MOVIE COLLECTIONS</h1>
+            <p class="text-center">we offer you the world of endless movie choices, sharing, discovering, and discussions.
+                join with us  to enjoy the endless joy of user perks...</p>
+            <h6 class="text-center">Our motto is your satisfaction... </h6>
+        </div>
+    {% endif %}
+    <div class="row">
+        {% for movie in movies %}
+            <div class="col-md-4"> <!-- Adjust the column size based on your layout -->
+                <div class="card h-100 margin-bottom-20 text-center">
+                    {% if movie.category %}
+                        {% if movie.category.id %}
+                            <p> {{ movie.category.name }}</p>
+                        {% else %}
+                            <p>No Category ID Found for {{ movie.name }}</p>
+                        {% endif %}
+                    {% endif %}
+
+                    <a href="{% if movie.category and movie.category.id and movie.id %}{% url 'movies:home' c_id=movie.category.id p_id=movie.id %}{% else %}{% url 'movies:allmoviescat' %}{% endif %}">
+                        {% if movie.image %}
+                            <div class="card-img-container">
+                                <img src="{{ movie.image.url }}" alt="{{ movie.name }}" class="img-fluid">
+                            </div>
+                        {% else %}
+                            <p>No image available for {{ movie.name }}</p>
+                        {% endif %}
+                    </a>
+                    <div class="card-body">
+                        <h4>{{ movie.name }}</h4>
+                        <p>{{ movie.release_date }}</p>
+                    </div>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                </div><br><div class="row"> <!-- Start a new row after every 3 products -->
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- Pagination section -->
+    <div class="mx-auto">
+        {% if movies.paginator.num_pages > 1 %}
+            <hr>
+            <div class="text-center">
+                {% for pg in movies.paginator.page_range %}
+                    <a href="?page={{pg}}" class="btn btn-light btn-sm {% if movies.number == pg %} active {% endif %}">{{pg}}</a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

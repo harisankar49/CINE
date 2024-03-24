@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block metadescription %}
+  {{ movie.description|truncatewords:155 }}
+{% endblock %}
+
+{% block title %}
+  {% if movie.category %}
+    {{ movie.name }} - Baely Stores
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+
+<body>
+    <div class="login-container">
+        <form action="{% url 'movies:login' %}" method="post">
+            {% csrf_token %}
+            <h1>Login </h1>
+            <input type="text" name="username" placeholder="Username"><br>
+            <input type="password" name="password" placeholder="Password"><br>
+            <input type="submit" value="Login"><br>
+        </form>
+        {% for message in messages %}
+            <p class="error-message">{{ message }}</p>
+        {% endfor %}
+    </div>
+</body>
+{% endblock %}

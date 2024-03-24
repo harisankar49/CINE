@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block metadescription %}
+  {{ movie.description|truncatewords:155 }}
+{% endblock %}
+
+{% block title %}
+  {% if movie.category %}
+    {{ movie.name }} - Baely Stores
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Add Category</h2>
+    <form method="post" enctype="multipart/form-data" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        {% csrf_token %}
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="id_name" style="font-weight: bold;">Name</label>
+            <input type="text" id="id_name" name="name" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;">
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="id_description" style="font-weight: bold;">Description</label>
+            <textarea id="id_description" name="description" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;"></textarea>
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="id_image" style="font-weight: bold;">Image</label>
+            <input type="file" id="id_image" name="image">
+        </div>
+        <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Submit</button>
+    </form>
+</div>
+{% endblock %}

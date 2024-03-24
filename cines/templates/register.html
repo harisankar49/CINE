@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block metadescription %}
+  {{ movie.description|truncatewords:155 }}
+{% endblock %}
+
+{% block title %}
+  {% if movie.category %}
+    {{ movie.name }} - Baely Stores
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .register-container {
+            width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .register-container h1 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .register-container input[type="text"],
+        .register-container input[type="email"],
+        .register-container input[type="password"] {
+            width: calc(100% - 40px);
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .register-container input[type="submit"] {
+            width: calc(100% - 40px);
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .register-container input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .register-container p.error-message {
+            color: red;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <form method="post" action="{% url 'movies:register' %}">
+            {% csrf_token %}
+            <h1>Registration Form</h1>
+            <input type="text" name="username" placeholder="Username" required><br>
+            <input type="text" name="first_name" placeholder="Enter your first name" required><br>
+            <input type="text" name="last_name" placeholder="Enter your last name" required><br>
+            <input type="email" name="email" placeholder="Enter your email" required><br>
+            <input type="password" name="password" placeholder="Enter your password" required><br>
+            <input type="password" name="cpassword" placeholder="Confirm your password" required><br>
+            <input type="submit" value="Register"><br>
+        </form>
+        {% for message in messages %}
+            <p class="error-message">{{ message }}</p>
+        {% endfor %}
+    </div>
+</body>
+{% endblock %}
